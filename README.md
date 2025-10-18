@@ -1,50 +1,90 @@
-# 基于光线投射原理的伪3D迷宫游戏
-  基于easyx图形库开发。
-  大一上C语言结业项目之一，做这个的灵感来源于重返德军总部的伪3D，自己复现了下，原理是光线投射。
-  迷宫的生成是随机的，每一次打开都会生成一个随机的迷宫。
-  实际上这个游戏还含有一些BUG，比如墙角可能有空隙，白色墙壁生成在出生点，并且作为一名大一新生的代码水平其实很低下，还请各位大神赐教。
-  我对这个游戏的设想还有运用材质，添加精灵等等，可惜能力有限，加上这是期末周的结业项目之一，未能实现深感遗憾。
-  源文件还缺失一个mili.wav的音频（体积过大上传不了),所以直接打开可能会有声音上的出错。可以在config.h文件中对BGM文件进行修改。
+# 🌀 基于光线投射原理的伪3D迷宫游戏
 
-  以下是对游戏的操作和基本信息
-  
-    You are Mostima,the keeper of the lock&keys.
-    You are trapped in the maze.
-    Break the white wall and leave here!
-    The object of the game is to find the black wall to escape the maze,while you break the barria
-    Press W/S to control role to move forward/back.And w/s can control main menu cursor.
-    Press A/D to Control the rotational motion of the character.
-    Press E to get position for now, which can make find the way.
-    When you really can't finish the game, please press P.
-    
-  以下是对每个游戏文件的解释（AI，人太懒了）
-    
-    main.cpp:
-    这是项目的入口文件，包含 main 函数。
-    包含初始化函数 initialization，用于初始化图形界面、随机数种子、地图等。
-    根据用户输入选择不同的模式（演示模式或游戏模式）。
-    在游戏模式中，调用 EngineForGame 函数来运行游戏逻辑。
-    在游戏结束时，根据结果调用 congratulation 或 pity 函数，并记录玩家信息。
-    
-    Config.h:
-    包含项目所需的头文件和库。
-    定义了游戏的各种宏、结构体和全局变量。
-    包含与时间、模式、收集、图片路径、多线程、音频文件路径等相关的变量声明。
-    
-    EngineForGame.cpp:
-    包含 EngineForGame 函数，负责游戏的主要逻辑。
-    包含 Generation_Frame_3D 函数，用于生成伪3D画面。
-    处理玩家输入、更新游戏状态、绘制游戏画面等。
-    
-    EngineForDev.cpp:
-    是游戏演示模式的主题文件。
-    包含一些二维的处理。
-    
-    misc.cpp:
-    包含各种辅助函数，如 PlaySoundEffect（音效播放线程函数）、transparentimage（透明PNG图片函数）、message（信息显示函数）、menu（主菜单绘制函数）、congratulation（通关界面绘制函数）、pity（未通关界面绘制函数）等。
-    包含与排行榜功能相关的函数，如 rank、infiles、datasFromFile、compare。
-    
-    players.txt 和 times.txt:
-    用于存储玩家的名字和时间。
+> 🎮 使用 EasyX 图形库开发 | 光线投射（Raycasting）原理实现 | 随机迷宫生成  
+> 大一上 C 语言结课项目之一 —— 灵感来自经典游戏《重返德军总部》。
+
+---
+
+## ✨ 项目简介
+
+这是一个使用 **光线投射（Raycasting）** 技术实现的伪 3D 迷宫探索游戏。  
+玩家将在随机生成的迷宫中探索、寻找出口，并破坏挡路的白色墙壁。  
+项目完全基于 C 语言与 EasyX 图形库编写。
+
+> 💡 每次启动游戏都会生成全新的随机迷宫。  
+> 由于能力与时间限制（期末周作品 😭），游戏中仍存在部分小 BUG：
+> - 墙角可能存在空隙；
+> - 出生点可能生成白色墙壁；
+> - 音频文件 `mili.wav` 未包含在仓库中（体积过大，可手动替换）。
+
+---
+
+## 🕹️ 游戏操作说明
+
+| 按键 | 功能说明 |
+|:----:|:---------|
+| **W / S** | 前进 / 后退（在主菜单中控制光标） |
+| **A / D** | 左右旋转视角 |
+| **E** | 获取当前位置（用于辨路） |
+| **P** | 放弃游戏（当你真的找不到出口时） |
+
+> 🎯 游戏目标：  
+> 你是 Mostima —— the keeper of the lock & keys。  
+> 被困于迷宫之中。  
+> **打破白墙，找到黑墙出口，逃离这里！**
+
+---
+
+## 🧩 文件结构说明
+
+| 文件 | 说明 |
+|:------|:------|
+| **main.cpp** | 项目入口。包含初始化（图形界面、随机种子、地图等），根据选择进入演示或游戏模式，调用 `EngineForGame()` 运行核心逻辑。 |
+| **Config.h** | 定义全局宏、结构体和变量。包括时间、模式、贴图路径、音频路径、线程变量等。 |
+| **EngineForGame.cpp** | 游戏主逻辑核心：处理输入、更新状态、调用 `Generation_Frame_3D()` 绘制伪3D场景。 |
+| **EngineForDev.cpp** | 演示模式逻辑，主要处理二维图像渲染。 |
+| **misc.cpp** | 各类辅助函数：音效线程（`PlaySoundEffect`）、透明图像绘制、信息提示、菜单界面、结算界面、排行榜（`rank`, `datasFromFile`, `compare` 等）。 |
+| **players.txt / times.txt** | 玩家数据与通关时间记录文件。 |
+
+---
+
+## 🔊 音频资源
+
+默认背景音乐文件为：
+`mili.wav`
+
+由于体积较大未包含在仓库中。  
+如需正常播放，请在 `config.h` 中修改 BGM 路径或替换为你自己的音频文件。
+
+---
+
+## 🏗️ 技术要点
+
+- 🧠 **Raycasting 光线投射**：通过逐列投射光线计算墙面距离，渲染出伪 3D 效果。
+- 🎲 **随机迷宫生成算法**：每次启动生成独立迷宫。
+- 🖼️ **EasyX 图形库**：用于渲染图形与处理事件。
+- 🎧 **多线程音效播放**：游戏与音效线程分离，保证运行流畅。
+- 💾 **排行榜系统**：记录玩家姓名与完成时间。
+
+---
+
+
+## 💬 作者的话
+
+> 作为大一上学生的课程项目，这个游戏在技术与美术上都还很粗糙。  
+> 但能用光线投射原理复现出伪3D效果、实现随机迷宫，我依然感到十分满足。  
+> 如果你有更好的优化建议，欢迎在 Issue 区或 PR 中留言！
+
+---
+
+## 📜 License
+
+本项目仅用于学习与展示，禁止商用。  
+若引用代码，请注明来源：  
+**[A-raycasting-maze-game](https://github.com/L1rics06/A-raycasting-maze-game)** by *L1rics06*
+
+---
+
+
  
   
